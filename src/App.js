@@ -9,16 +9,27 @@ const App = () => {
 
     const [movies, setMovies] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-
+    const [loading, setLoading] = useState(false);
+    
     const searchMovies = async (title) => {
+        setLoading(true);
         const response = await fetch(`${API_URL}&s=${title}`);
         const data = await response.json();
 
+
         setMovies(data.Search);
+        setLoading(false);
+        if (data.Error === "Too many results.") {
+            alert(`The API returned an error for the search string you entered, because there are too many movies with ${title} in their name. Please try again.`);
+        }
+
+        if (data.Error === "Movie not found!") {
+            alert(`The API returned an error for the search string you entered, because there are no movies with ${title} in their name. Please try again.`);
+        }
     }
 
-    useEffect(() => {
-        searchMovies('Superman');
+    useEffect(() => { 
+        searchMovies("Superman");
     }, []);
 
     return (
@@ -39,7 +50,11 @@ const App = () => {
             </div>
 
             {
-                movies.length > 0
+                loading===true?(
+                    <div className="loading">
+                        <h2>Loading......</h2>
+                    </div>
+                ):(movies?.length > 0
                     ? (
                         <div className="container">
                             {movies.map((movie) => (
@@ -48,9 +63,10 @@ const App = () => {
                         </div>
                     ) : (
                         <div className="empty">
-                            <h2>No movies found.</h2>
+                            <h2>Search with a different value.</h2>
                         </div>
                     )
+                )
             }
 
         </div>
