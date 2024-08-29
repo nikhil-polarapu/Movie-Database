@@ -83,7 +83,7 @@ h1 {
   align-items: center;
 }
 
-.empty h2 {
+.empty, .loading h2 {
   font-size: 1.25rem;
   color: #f9d3b4;
   font-family: var(--font-raleway);
